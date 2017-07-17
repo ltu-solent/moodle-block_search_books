@@ -43,7 +43,7 @@ class block_search_books extends block_base {
     function get_content() {
         global $CFG, $USER, $COURSE, $DB;
 // SSU_AMEND START - BOOK SEARCH	
-		$this->page->requires->js_call_amd('block_search_books/checkbox', 'init', array());
+		$this->page->requires->js_call_amd('block_search_books/checkbox', 'init');
 // SSU_AMEND END
 
         if ($this->content !== NULL) {
@@ -117,7 +117,7 @@ class block_search_books extends block_base {
 		$this->content->text .= '</div>';
 		
         $this->content->text .= '<label class="accesshide" for="searchbooksquery">' . $searchbooks . '</label>';
-        $this->content->text .= '<img src="' . $CFG->wwwroot . '/theme/image.php/solent2016/book/1448036212/icon" id="book_search_icon" class="iconlarge activityicon" alt=" " role="presentation"> <input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="" />';
+        $this->content->text .= '<img src="' . $CFG->wwwroot . '/theme/image.php/solent2017/book/1448036212/icon" id="book_search_icon" class="iconlarge activityicon" alt=" " role="presentation"> <input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="" />';
         $this->content->text .= '<br /><input type="submit" name="submit" value="' . $searchbooks . '"/>';
         $this->content->text .= '</fieldset></form></div>';
 
