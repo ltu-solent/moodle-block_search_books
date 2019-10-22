@@ -46,7 +46,7 @@ function search($query, $course, $offset, &$countentries) {
 
     if ( $lexer->parse( $query ) ) {
         $parsearray = $parser->get_parsed_array();
-        list($messagesearch, $msparams) = 
+        list($messagesearch, $msparams) =
             search_generate_SQL($parsearray, 'bc.title', 'bc.content', null, null, null, null, null, null);
     }
 
@@ -55,13 +55,13 @@ function search($query, $course, $offset, &$countentries) {
     $fromsql   = "  FROM {book_chapters} bc, {book} b";
 
     list( $insql, $inparams ) = $DB->get_in_or_equal($bookids, SQL_PARAMS_NAMED );
-    
+
     $params = array_merge( Array( 'courseid' => $course->id ),
                            $inparams, $msparams);
 
     $wheresql  = "  WHERE b.course = :courseid
-                          AND b.id $insql 
-                          AND bc.bookid = b.id 
+                          AND b.id $insql
+                          AND bc.bookid = b.id
                           AND bc.hidden = 0
                           AND $messagesearch ";
     $ordersql  = "  ORDER BY bc.bookid, bc.pagenum";

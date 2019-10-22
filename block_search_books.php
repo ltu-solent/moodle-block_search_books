@@ -41,8 +41,8 @@ class block_search_books extends block_base {
     }
 
     function get_content() {
-        global $CFG, $USER, $COURSE, $DB;
-// SSU_AMEND START - BOOK SEARCH	
+        global $CFG, $USER, $COURSE, $DB, $OUTPUT;
+// SSU_AMEND START - BOOK SEARCH
 		$this->page->requires->js_call_amd('block_search_books/checkbox', 'init');
 // SSU_AMEND END
 
@@ -71,7 +71,7 @@ class block_search_books extends block_base {
 
         $searchbooks = get_string('bookssearch', 'block_search_books');
 
-// SSU_AMEND START - BOOK SEARCH	
+// SSU_AMEND START - BOOK SEARCH
 		$books = get_all_instances_in_course('book', $course);
 
 	// $this->content->text  = '<div class="searchform">';
@@ -84,40 +84,40 @@ class block_search_books extends block_base {
 	// $this->content->text .= '<br /><input type="submit" name="submit" value="' . $searchbooks . '"/>';
 	// $this->content->text .= '</fieldset></form></div>';
 
-   // return $this->content;	
-	
-	if(count($books) > 0){         
+   // return $this->content;
+
+	  if(count($books) > 0){
 // SSU_AMEND END
 
         $this->content->text  = '<div class="searchform">';
-        $this->content->text .= '<form action="' . $CFG->wwwroot . '/blocks/search_books/search_books.php" style="display:inline">';
+        $this->content->text .= '<form action="' . $CFG->wwwroot . '/blocks/search_books/search_books.php" method="post" style="display:inline">';
         $this->content->text .= '<fieldset class="invisiblefieldset">';
         $this->content->text .= '<input name="courseid" type="hidden" value="' . $course->id . '" />';
         $this->content->text .= '<input name="page" type="hidden" value="0" />';
 
-// SSU_AMEND START - BOOK SEARCH    
-		$this->content->text .= '<div style="text-align:left">
-                                    <h3><a id="toggle" href="#">Advanced search...</a></h3>';                             
-		$this->content->text .= '<div id="checkholder">';						  
-		$this->content->text .= '<p id="intro">Select individual books to narrow your search results:</p>';	
+// SSU_AMEND START - BOOK SEARCH
+    		$this->content->text .= '<div style="text-align:left">
+                                        <h3><a id="toggle" href="#">Advanced search...</a></h3>';
+    		$this->content->text .= '<div id="checkholder">';
+    		$this->content->text .= '<p id="intro">Select individual books to narrow your search results:</p>';
 
-		foreach ($books as $book) {
-			$cm = get_coursemodule_from_instance("book", $book->id, $course->id);
-			$context = context_module::instance($cm->id);
-			if ($cm->visible || has_capability('moodle/course:viewhiddenactivities', $context)) {
-				if (has_capability('mod/book:read', $context)) {
-					$bookids[] = $book->id;
-					$this->content->text .= '<label><input type="checkbox" class="checkbox1" name="check_book[]" value="'. $book->id . '"/><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$cm->id.'" target="_blank">' . $book->name . '</a></label><br />';
-				}
-			}
-		}
-	
+    		foreach ($books as $book) {
+    			$cm = get_coursemodule_from_instance("book", $book->id, $course->id);
+    			$context = context_module::instance($cm->id);
+    			if ($cm->visible || has_capability('moodle/course:viewhiddenactivities', $context)) {
+    				if (has_capability('mod/book:read', $context)) {
+    					$bookids[] = $book->id;
+    					$this->content->text .= '<label><input type="checkbox" class="checkbox1" name="check_book[]" value="'. $book->id . '"/><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$cm->id.'" target="_blank">' . $book->name . '</a></label><br />';
+    				}
+    			}
+    		}
+
         $this->content->text .= '<label><input type="checkbox" name="check" id="check">Select/unselect all</label><br />';
         $this->content->text .= '</div>';
-		$this->content->text .= '</div>';
-		
+        $this->content->text .= '</div>';
+
         $this->content->text .= '<label class="accesshide" for="searchbooksquery">' . $searchbooks . '</label>';
-        $this->content->text .= '<img src="' . $CFG->wwwroot . '/theme/image.php/solent2017/book/1448036212/icon" id="book_search_icon" class="iconlarge activityicon" alt=" " role="presentation"> <input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="" />';
+        $this->content->text .= $OUTPUT->image_icon('icon', get_string('pluginname', 'book'), 'book') . '<input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="" />';
         $this->content->text .= '<br /><input type="submit" name="submit" value="' . $searchbooks . '"/>';
         $this->content->text .= '</fieldset></form></div>';
 
@@ -126,7 +126,7 @@ class block_search_books extends block_base {
       }else{
           $this->content->text .= '<p id="intro">There are no books in this course</p>';
       }
-// SSU_AMEND END	  
+// SSU_AMEND END
 
     }
 }
