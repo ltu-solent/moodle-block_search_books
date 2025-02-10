@@ -115,7 +115,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_url($FULLME);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    print_error('invalidcourseid');
+    throw new moodle_exception('invalidcourseid');
 }
 
 require_course_login($course);
