@@ -21,17 +21,20 @@
 
     Example context (json):
     {
+        "formurl": "/",
+        "courseid": 1,
+        "query": "wonderful"
     }
 }}
 
 <div class="searchform">
-    <form action="{{formurl}}" method="post" style="display:inline">
+    <form action="{{{formurl}}}" method="post" style="display:inline">
         <fieldset class="invisiblefieldset">
-        <input name="courseid" type="hidden" value="{{courseid}}" />
-        <input name="page" type="hidden" value="0" />
+        <input name="courseid" type="hidden" value="{{courseid}}"/>
+        <input name="page" type="hidden" value="0"/>
         <label class="accesshide" for="searchbooksquery">{{#str}} bookssearch, block_search_books {{/str}}</label>
         {{#pix}} icon, book, {{#str}} pluginname, book {{/str}} {{/pix}}
-        <input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="{{{query}}}" />
+        <input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="{{{query}}}"/>
         <input class="btn btn-primary m-1" type="submit" name="submit" value="{{#str}} bookssearch, block_search_books {{/str}}"/>
         </fieldset>
     </form>
