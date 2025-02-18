@@ -24,15 +24,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['bookssearch'] = 'Search books';
+
+$string['emptyquery'] = 'No search keywords provided';
+
+$string['format'] = 'Select the desired format to view the results';
+
+$string['norecordsfound'] = 'No records found';
+
 $string['pluginname'] = 'Search books';
 
-$string['bookssearch'] = 'Search books';
-$string['ofabout'] = 'of about';
-$string['for'] = 'for';
-$string['norecordsfound'] = 'No records found';
 $string['results'] = 'Results';
-$string['format'] = 'Select the desired format to view the results';
-$string['seconds'] = 'seconds';
-$string['searchresults'] = 'Search book results';
+
 $string['search_books:addinstance'] = 'Add a new Search Book instance';
-$string['emptyquery'] = 'No search keywords provided';
+$string['searchresults'] = 'Search book results';
+$string['searchsummary'] = 'Results <strong>{$a->min}</strong> - <strong>{$a->max}</strong> of about <strong>{$a->total}</strong> for "<strong>{$a->query}</strong>"';
+$string['seconds'] = 'seconds';
+$string['selectbooks'] = 'Select individual books to narrow your search results:';
+

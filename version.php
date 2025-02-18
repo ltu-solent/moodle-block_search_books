@@ -24,12 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016011600; // The current block version (Date: YYYYMMDDXX)
-$plugin->requires  = 2012062500; // Requires this Moodle version (v2.3.0)
+$plugin->version   = 2025021800;
+$plugin->requires  = 2022112800;
 $plugin->component = 'block_search_books';
-
-$plugin->maturity = MATURITY_ALPHA;
-
-$plugin->dependencies = array(
-    'mod_book'     => 2012061700,  // Requires mod_book version (v2.3.0)
-    'mod_glossary' => 2012061700); // Requires mod_glossary version (v2.3.0)
+$plugin->maturity = MATURITY_STABLE;
+$plugin->dependencies = [
+    'mod_book'     => ANY_VERSION,
+    'mod_glossary' => ANY_VERSION,
+];
+$plugin->release = '4.1+';

@@ -24,18 +24,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-
-    'block/search_books:addinstance' => array(
+$capabilities = [
+    'block/search_books:addinstance' => [
         'riskbitmask' => RISK_SPAM | RISK_XSS,
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
-);
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/site:manageblocks',
+    ],
+];

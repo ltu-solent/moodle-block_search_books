@@ -1,0 +1,38 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_search_books/searchbox
+
+    TODO describe template searchbox
+
+    Example context (json):
+    {
+    }
+}}
+
+<div class="searchform">
+    <form action="{{formurl}}" method="post" style="display:inline">
+        <fieldset class="invisiblefieldset">
+        <input name="courseid" type="hidden" value="{{courseid}}" />
+        <input name="page" type="hidden" value="0" />
+        <label class="accesshide" for="searchbooksquery">{{#str}} bookssearch, block_search_books {{/str}}</label>
+        {{#pix}} icon, book, {{#str}} pluginname, book {{/str}} {{/pix}}
+        <input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="{{{query}}}" />
+        <input class="btn btn-primary m-1" type="submit" name="submit" value="{{#str}} bookssearch, block_search_books {{/str}}"/>
+        </fieldset>
+    </form>
+</div>

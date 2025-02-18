@@ -24,41 +24,68 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+use block_search_books\helper;
 
+/**
+ * Search books block
+ */
 class block_search_books extends block_base {
-    function init() {
-        $this->title = get_string('pluginname','block_search_books');
+    /**
+     * Initialise the block
+     *
+     * @return void
+     */
+    public function init() {
+        $this->title = get_string('pluginname', 'block_search_books');
     }
 
-    function has_config() {return false;}
-
-    function applicable_formats() {
-// SSU_AMEND START - BOOK SEARCH
-        //return (array('site-index' => true, 'course-view-weeks' => true, 'course-view-topics' => true));
-        return (array('site-index' => true, 'course-view-weeks' => true, 'course-view-topics' => true, 'course-view-nonumbers' => true, 'onetopic' => true));
-// SSU_AMEND END
+    /**
+     * And local config settings for the teacher?
+     *
+     * @return bool
+     */
+    public function has_config(): bool {
+        return false;
     }
 
-    function get_content() {
-        global $CFG, $USER, $COURSE, $DB, $OUTPUT;
-// SSU_AMEND START - BOOK SEARCH
-		$this->page->requires->js_call_amd('block_search_books/checkbox', 'init');
-// SSU_AMEND END
+    /**
+     * List of formats the block appears on
+     *
+     * @return array
+     */
+    public function applicable_formats(): array {
+        // SSU_AMEND_START: Include our course format.
+        return [
+            'site-index' => true,
+            'course-view-weeks' => true,
+            'course-view-topics' => true,
+            'course-view-nonumbers' => true,
+            'course-view-onetopic' => true,
+        ];
+        // SSU_AMEND_END.
+    }
 
-        if ($this->content !== NULL) {
+    /**
+     * Get block content.
+     *
+     * @return stdClass|null
+     */
+    public function get_content(): ?stdClass {
+        global $DB, $COURSE, $OUTPUT;
+
+        if ($this->content !== null) {
             return $this->content;
         }
 
         if ($COURSE->id == $this->page->course->id) {
             $course = $COURSE;
         } else {
-            $course = $DB->get_record('course', array('id' => $this->page->course->id));
+            $course = $DB->get_record('course', ['id' => $this->page->course->id]);
         }
 
-        // Course not found, we won't do anything in the block
+        // Course not found, we won't do anything in the block.
         if (empty($course)) {
-            return '';
+            return null;
         }
 
         $this->content = new stdClass;
@@ -69,64 +96,36 @@ class block_search_books extends block_base {
             return $this->content;
         }
 
-        $searchbooks = get_string('bookssearch', 'block_search_books');
+        $books = helper::get_readable_books($course);
 
-// SSU_AMEND START - BOOK SEARCH
-		$books = get_all_instances_in_course('book', $course);
+        if (count($books) == 0) {
+            $this->content->text .= '<p id="intro">There are no books in this course</p>';
+            return $this->content;
+        }
+        $data = new stdClass();
+        $data->courseid = $course->id;
+        $formurl = new moodle_url('/blocks/search_books/search_books.php');
+        $data->formurl = $formurl->out();
+        $data->books = [];
+        foreach ($books as $book) {
+            $cm = get_coursemodule_from_instance("book", $book->id, $course->id);
+            $context = context_module::instance($cm->id);
+            if ($cm->visible || has_capability('moodle/course:viewhiddenactivities', $context)) {
+                if (has_capability('mod/book:read', $context)) {
+                    $bookitem = new stdClass();
+                    $bookitem->bookid = $book->id;
+                    $url = new moodle_url('/mod/book/view.php', [
+                        'id' => $cm->id,
+                    ]);
+                    $bookitem->url = $url->out();
+                    $bookitem->name = s($book->name);
+                    $data->books[] = $bookitem;
+                }
+            }
+        }
 
-	// $this->content->text  = '<div class="searchform">';
-	// $this->content->text .= '<form action="' . $CFG->wwwroot . '/blocks/search_books/search_books.php" style="display:inline">';
-	// $this->content->text .= '<fieldset class="invisiblefieldset">';
-	// $this->content->text .= '<input name="courseid" type="hidden" value="' . $course->id . '" />';
-	// $this->content->text .= '<input name="page" type="hidden" value="0" />';
-	// $this->content->text .= '<label class="accesshide" for="searchbooksquery">' . $searchbooks . '</label>';
-	// $this->content->text .= '<input id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="" />';
-	// $this->content->text .= '<br /><input type="submit" name="submit" value="' . $searchbooks . '"/>';
-	// $this->content->text .= '</fieldset></form></div>';
-
-   // return $this->content;
-
-	  if(count($books) > 0){
-// SSU_AMEND END
-
-        $this->content->text  = '<div class="searchform">';
-        $this->content->text .= '<form action="' . $CFG->wwwroot . '/blocks/search_books/search_books.php" method="post" style="display:inline">';
-        $this->content->text .= '<fieldset class="invisiblefieldset">';
-        $this->content->text .= '<input name="courseid" type="hidden" value="' . $course->id . '" />';
-        $this->content->text .= '<input name="page" type="hidden" value="0" />';
-
-// SSU_AMEND START - BOOK SEARCH
-    		$this->content->text .= '<div style="text-align:left">
-                                        <h3><a id="toggle" href="#">Advanced search...</a></h3>';
-    		$this->content->text .= '<div id="checkholder">';
-    		$this->content->text .= '<p id="intro">Select individual books to narrow your search results:</p>';
-
-    		foreach ($books as $book) {
-    			$cm = get_coursemodule_from_instance("book", $book->id, $course->id);
-    			$context = context_module::instance($cm->id);
-    			if ($cm->visible || has_capability('moodle/course:viewhiddenactivities', $context)) {
-    				if (has_capability('mod/book:read', $context)) {
-    					$bookids[] = $book->id;
-    					$this->content->text .= '<label><input type="checkbox" class="checkbox1" name="check_book[]" value="'. $book->id . '"/><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$cm->id.'" target="_blank">' . $book->name . '</a></label><br />';
-    				}
-    			}
-    		}
-
-        $this->content->text .= '<label><input type="checkbox" name="check" id="check">Select/unselect all</label><br />';
-        $this->content->text .= '</div>';
-        $this->content->text .= '</div>';
-
-        $this->content->text .= '<label class="accesshide" for="searchbooksquery">' . $searchbooks . '</label>';
-        $this->content->text .= $OUTPUT->image_icon('icon', get_string('pluginname', 'book'), 'book') . '<input type="text" id="searchbooksquery" name="bsquery" size="20" maxlength="255" value="" />';
-        $this->content->text .= '<br /><input type="submit" name="submit" value="' . $searchbooks . '"/>';
-        $this->content->text .= '</fieldset></form></div>';
+        $this->content->text = $OUTPUT->render_from_template('block_search_books/searchbox', $data);
 
         return $this->content;
-
-      }else{
-          $this->content->text .= '<p id="intro">There are no books in this course</p>';
-      }
-// SSU_AMEND END
-
     }
 }
